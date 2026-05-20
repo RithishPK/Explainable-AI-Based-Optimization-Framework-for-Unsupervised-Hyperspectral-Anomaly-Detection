@@ -1,0 +1,2 @@
+# Explainable-AI-Based-Optimization-Framework-for-Unsupervised-Hyperspectral-Anomaly-Detection
+Current hyperspectral anomaly detection methods suffer from anomaly leakage, weak spatial–spectral feature extraction, poor explainability, and high computational cost. An efficient and explainable deep learning framework is needed to accurately detect anomalous pixels and improve interpretation in hyperspectral images.
