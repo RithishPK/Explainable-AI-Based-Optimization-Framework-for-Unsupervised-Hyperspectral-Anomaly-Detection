@@ -1,0 +1,11 @@
+# Raises st.file_uploader's per-file limit from the 200MB default to 1GB.
+# This file must live at MSNet-main-uploader/.streamlit/config.toml - i.e.
+# inside the folder you run `streamlit run streamlit_app\app.py` FROM, not
+# inside streamlit_app/ itself. Streamlit resolves .streamlit/config.toml
+# relative to the current working directory at launch, not relative to the
+# script path.
+#
+# Takes effect on the NEXT `streamlit run` - restart the app after editing.
+
+[server]
+maxUploadSize = 1024

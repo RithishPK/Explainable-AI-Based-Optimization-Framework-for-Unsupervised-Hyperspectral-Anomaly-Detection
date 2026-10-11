@@ -1,0 +1,7 @@
+streamlit>=1.32
+torch>=1.10
+numpy
+scipy
+scikit-learn
+matplotlib
+tqdm

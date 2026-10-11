@@ -1,0 +1,100 @@
+% ===========================================================================
+% Additions for main.tex — verified against the actual papers, August 2026.
+% Every citation below was checked; none came from a chatbot's reference list.
+% ===========================================================================
+
+% --- BibTeX entries -------------------------------------------------------
+
+@article{cui2025imp,
+  title   = {Overcoming the Identity Mapping Problem in Self-Supervised
+             Hyperspectral Anomaly Detection},
+  author  = {Cui, Yongchuan and Zhang, Jinhe and Liu, Peng and
+             Song, Weijing and Zeng, Yi},
+  journal = {IEEE Transactions on Geoscience and Remote Sensing},
+  year    = {2025},
+  note    = {arXiv:2504.04115; code: github.com/yc-cui/Super-AD}
+}
+
+@article{huo2025msmnet,
+  title   = {Multi-scale memory network with separation training for
+             hyperspectral anomaly detection},
+  author  = {Huo, Yu and Dong, Youqiang and Wang, Chenhao and
+             Zhang, Min and Wang, Hai},
+  journal = {Information Processing and Management},
+  year    = {2025}
+}
+
+@article{haidar2025xaibs,
+  title   = {Explainability-Driven Dimensionality Reduction for
+             Hyperspectral Imaging},
+  author  = {Haidar, Salma and Oramas, Jos\'e},
+  journal = {arXiv preprint arXiv:2509.02340},
+  year    = {2025}
+}
+
+@article{adbsnet2025,
+  title   = {Reliable Task-Constrained Band Selection Method for
+             Hyperspectral Anomaly Detection},
+  journal = {Remote Sensing},
+  volume  = {17}, number = {17}, pages = {3081}, year = {2025},
+  doi     = {10.3390/rs17173081}
+}
+
+% --- Related Work paragraph -----------------------------------------------
+
+Recent work has begun to characterise the failure modes of self-supervised
+reconstruction detectors systematically. Cui \emph{et al.}~\cite{cui2025imp}
+formalise the identity mapping problem, in which a sufficiently expressive
+network eventually reconstructs anomalies as faithfully as background, and
+organise existing remedies into perturbation, reconstruction, and
+regularisation. Within that taxonomy MSNet is placed among methods that
+modulate reconstruction using an error-derived mask. Notably, the authors
+identify the choice of the coefficient balancing reconstruction against
+regularisation as an unresolved difficulty shared across this family. The
+present work addresses precisely that coefficient. Separately, MSMNet
+\cite{huo2025msmnet} extends multiscale separation training with a memory
+module and coarse-to-fine pseudo-label generation, which we treat as the
+closest architectural successor to our backbone.
+
+% --- Justification for the fixed-budget protocol ---------------------------
+% Put this in Experimental Setup. It converts your leakage problem into a
+% methodology contribution.
+
+Reconstruction-based detectors do not converge monotonically in detection
+performance: AUC typically peaks and then degrades as the network begins to
+reconstruct anomalous pixels~\cite{cui2025imp}. We observe the same behaviour
+on Coast, where AUC peaks near epoch~750 and declines thereafter
+(Fig.~\ref{fig:convergence}). Selecting a checkpoint at the observed peak
+would require access to ground-truth labels and therefore constitutes
+model-selection leakage. We accordingly fix the training budget a priori at
+$10 \times 150 = 1500$ epochs for every configuration and report the
+final-iteration model, with mean $\pm$ standard deviation over five seeds.
+All configurations share seeds, so per-seed differences are paired.
+
+% --- Positioning the XAI contribution -------------------------------------
+% Rewrite of the contribution claim. Note what it does NOT say.
+
+Explanation-guided feature selection has been explored for supervised
+hyperspectral classification, where post-hoc attributions from LRP, SHAP or
+RISE are aggregated into per-band influence scores and used to construct
+compact spectral subsets~\cite{haidar2025xaibs}. Attribution-like signals have
+also been applied to band selection for anomaly detection, though existing
+formulations rely on spectral attention and require a small number of labelled
+anomalous samples~\cite{adbsnet2025}. Our use of attribution differs in
+purpose rather than degree: rather than selecting inputs, we use the spatial
+locality of Integrated Gradients attributions relative to the current soft
+mask as a control signal for the separation coefficient. Because the residual
+criterion can only increase this coefficient, whereas the attribution-locality
+criterion can move it in either direction, the latter admits genuine
+closed-loop control.
+
+% --- Limitations (write this yourself, do not omit it) ---------------------
+
+A reviewer will ask whether the alignment score is circular, since the soft
+mask and the attribution both derive from the reconstruction error. The
+distinction we rely on is that the mask records \emph{where} error occurs
+while the attribution records \emph{what caused it}; these differ over the
+receptive field, so that error arising from a pixel's own spectrum is
+distinguishable from error arising from its spatial context. We validate this
+empirically with a spatially permuted saliency control (Sec.~\ref{sec:controls})
+and report the result whichever way it falls.
